@@ -20,23 +20,25 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.jrb.docasm.service.web;
+package org.jrb.docasm.web;
+
+import org.jrb.commons.web.AbstractResponse;
 
 /**
- * RESTFUL entity resource.
- * 
+ * RESTful message response for the Document Assembly application.
+ *
  * @author <a href="mailto:brulejr@gmail.com">Jon Brule</a>
  */
-public abstract class EntityResponse<E> extends AbstractResponse {
+public class MessageResponse extends AbstractResponse {
 
-	private E entity;
+	private String message;
 
-	public E getEntity() {
-		return entity;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setEntity(final E entity) {
-		this.entity = entity;
+	public void setMessage(final String message) {
+		this.message = message;
 	}
 
 }

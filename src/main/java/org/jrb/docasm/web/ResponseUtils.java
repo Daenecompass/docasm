@@ -20,7 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.jrb.docasm.service.web;
+package org.jrb.docasm.web;
 
 import java.util.Collections;
 import java.util.Date;
@@ -28,6 +28,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.jrb.commons.web.AbstractResponse;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

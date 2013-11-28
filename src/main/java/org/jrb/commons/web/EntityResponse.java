@@ -20,16 +20,27 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.jrb.docasm.service.web.controller;
+package org.jrb.commons.web;
 
-import org.jrb.docasm.domain.Document;
-import org.jrb.docasm.service.web.EntityResponse;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
- * RESTful document response for the Document Assembly application.
- *
+ * Standard RESTFUL entity resource.
+ * 
  * @author <a href="mailto:brulejr@gmail.com">Jon Brule</a>
  */
-public class DocumentResponse extends EntityResponse<Document> {
+@JsonInclude(Include.NON_EMPTY)
+public abstract class EntityResponse<E> extends AbstractResponse {
+
+	private E entity;
+
+	public E getEntity() {
+		return entity;
+	}
+
+	public void setEntity(final E entity) {
+		this.entity = entity;
+	}
 
 }

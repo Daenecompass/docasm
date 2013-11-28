@@ -20,10 +20,11 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.jrb.docasm.service.web.controller;
+package org.jrb.docasm.web.controller;
 
 import java.util.List;
 
+import org.jrb.commons.web.controller.AbstractCrudController;
 import org.jrb.docasm.domain.Document;
 import org.jrb.docasm.service.document.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -20,7 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.jrb.docasm.service.web;
+package org.jrb.docasm.web;
 
 import org.jrb.docasm.service.document.DuplicateDocumentException;
 import org.jrb.docasm.service.document.InvalidDocumentException;

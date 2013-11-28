@@ -20,7 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.jrb.docasm.service.web;
+package org.jrb.commons.web;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -32,8 +32,9 @@ import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * Base RESTFUL resource.
- *
+ * Base RESTFUL resource that supports application identification and status
+ * within the response headers.
+ * 
  * @author <a href="mailto:brulejr@gmail.com">Jon Brule</a>
  */
 public abstract class AbstractResponse extends ResourceSupport {
@@ -83,23 +84,23 @@ public abstract class AbstractResponse extends ResourceSupport {
 	public String getVersion() {
 		return getHeader(HEADER_VERSION, String.class);
 	}
-	
+
 	public void setElapsedTime(final Long elapsedTime) {
 		headers.put(HEADER_ELAPSED_TIME, elapsedTime);
 	}
-	
+
 	public void setProduct(final String product) {
 		headers.put(HEADER_PRODUCT, product);
 	}
-	
+
 	public void setStartTime(final Date startTime) {
 		headers.put(HEADER_START_TIME, startTime);
 	}
-	
+
 	public void setStatus(final HttpStatus status) {
 		headers.put(HEADER_STATUS, status);
 	}
-	
+
 	public void setVersion(final String version) {
 		headers.put(HEADER_VERSION, version);
 	}

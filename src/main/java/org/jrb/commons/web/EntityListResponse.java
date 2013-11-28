@@ -20,7 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.jrb.docasm.service.web;
+package org.jrb.commons.web;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
- * Container for a paged list of entities.
+ * Standard RESTFUL entity list resource.
  * 
  * @author <a href="mailto:brulejr@gmail.com">Jon Brule</a>
  */

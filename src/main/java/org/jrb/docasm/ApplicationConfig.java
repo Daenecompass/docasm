@@ -24,7 +24,7 @@ package org.jrb.docasm;
 
 import java.text.DateFormat;
 
-import org.jrb.docasm.service.web.ResponseUtils;
+import org.jrb.docasm.web.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
@@ -45,7 +45,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  * @author <a href="mailto:brulejr@gmail.com">Jon Brule</a>
  */
 @Configuration
-@ComponentScan({ "org.jrb.docasm.domain", "org.jrb.docasm.repository", "org.jrb.docasm.service.*" })
+@ComponentScan({ "org.jrb.docasm.domain", "org.jrb.docasm.repository", "org.jrb.docasm.service.*", "org.jrb.docasm.web.*" })
 @PropertySource({ "classpath:config/docasm.properties", "classpath:config/${app.env:LOCAL}/docasm.properties", })
 public class ApplicationConfig {
 
@@ -54,17 +54,17 @@ public class ApplicationConfig {
 
 	@Bean
 	public MappingJackson2HttpMessageConverter messageConverter() {
-		
+
 		// assemble json mapper
 		final ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 		objectMapper.setDateFormat(DateFormat.getDateInstance());
 		objectMapper.configure(Feature.WRITE_NUMBERS_AS_STRINGS, true);
-		
+
 		// assemble json message converter
 		final MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
 		converter.setObjectMapper(objectMapper);
-		
+
 		return converter;
 	}
 

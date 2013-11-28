@@ -20,35 +20,16 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.jrb.docasm.service.web.controller;
+package org.jrb.docasm.web.controller;
 
-import java.util.Date;
-
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.jrb.docasm.service.web.MessageResponse;
-import org.jrb.docasm.service.web.ResponseUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.jrb.commons.web.EntityResponse;
+import org.jrb.docasm.domain.Document;
 
 /**
- * Provides handling for the application root URI.
+ * RESTful document response for the Document Assembly application.
  *
  * @author <a href="mailto:brulejr@gmail.com">Jon Brule</a>
  */
-@Controller
-@RequestMapping("/")
-public class RootController {
-
-	@Autowired
-	private ResponseUtils utils;
-	
-	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<MessageResponse> home() {
-		final String timestamp = DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format(new Date());
-		return utils.createMessageResponse(timestamp);
-	}
+public class DocumentResponse extends EntityResponse<Document> {
 
 }

@@ -20,7 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.jrb.docasm.service.web.controller;
+package org.jrb.commons.web.controller;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
@@ -28,10 +28,10 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.atteo.evo.inflector.English;
-import org.jrb.docasm.service.web.EntityListResponse;
-import org.jrb.docasm.service.web.EntityResponse;
-import org.jrb.docasm.service.web.MessageResponse;
-import org.jrb.docasm.service.web.ResponseUtils;
+import org.jrb.commons.web.EntityListResponse;
+import org.jrb.commons.web.EntityResponse;
+import org.jrb.docasm.web.MessageResponse;
+import org.jrb.docasm.web.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
