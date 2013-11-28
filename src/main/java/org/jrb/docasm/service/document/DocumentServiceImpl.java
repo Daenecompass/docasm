@@ -118,7 +118,7 @@ public class DocumentServiceImpl implements DocumentService {
 			final Document document = documentRepository.findOne(id);
 			if (document != null) {
 				documentRepository.delete(document);
-				documentCache.invalidate(document);
+				documentCache.invalidate(new NamedKey(id));
 			} else {
 				throw new UnknownDocumentException("Document is unknown! id = " + id);
 			}
