@@ -22,16 +22,13 @@
  */
 package org.jrb.docasm.web.controller;
 
-import java.util.Date;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.jrb.docasm.web.MessageResponse;
-import org.jrb.docasm.web.ResponseUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.jrb.commons.web.MessageResponse;
+import org.jrb.commons.web.controller.AbstractRootController;
+import org.jrb.docasm.domain.Document;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Provides handling for the application root URI.
@@ -40,15 +37,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @Controller
 @RequestMapping("/")
-public class RootController {
-
-	@Autowired
-	private ResponseUtils utils;
+public class RootController extends AbstractRootController {
 	
-	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<MessageResponse> home() {
-		final String timestamp = DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format(new Date());
-		return utils.createMessageResponse(timestamp);
+	protected void addLinks(final MessageResponse response) {
+		response.add(linkTo(DocumentController.class).withRel(entityRel(Document.class)));		
 	}
 
 }

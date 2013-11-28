@@ -27,6 +27,8 @@ import java.util.List;
 import org.jrb.commons.web.controller.AbstractCrudController;
 import org.jrb.docasm.domain.Document;
 import org.jrb.docasm.service.document.DocumentService;
+import org.jrb.docasm.web.response.DocumentListResponse;
+import org.jrb.docasm.web.response.DocumentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

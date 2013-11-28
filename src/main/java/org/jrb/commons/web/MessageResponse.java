@@ -20,15 +20,24 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.jrb.docasm.web.controller;
+package org.jrb.commons.web;
 
-import org.jrb.commons.web.EntityListResponse;
-import org.jrb.docasm.domain.Document;
 
 /**
- * RESTful document list response for the Document Assembly application.
+ * RESTful message response for the Document Assembly application.
  *
  * @author <a href="mailto:brulejr@gmail.com">Jon Brule</a>
  */
-public class DocumentListResponse extends EntityListResponse<Document> {
+public class MessageResponse extends AbstractResponse {
+
+	private String message;
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(final String message) {
+		this.message = message;
+	}
+
 }

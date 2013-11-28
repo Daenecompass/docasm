@@ -22,6 +22,8 @@
  */
 package org.jrb.docasm.web;
 
+import org.jrb.commons.web.MessageResponse;
+import org.jrb.commons.web.ResponseUtils;
 import org.jrb.docasm.service.document.DuplicateDocumentException;
 import org.jrb.docasm.service.document.InvalidDocumentException;
 import org.jrb.docasm.service.document.UnknownDocumentException;

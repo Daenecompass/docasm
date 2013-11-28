@@ -24,7 +24,7 @@ package org.jrb.docasm;
 
 import java.text.DateFormat;
 
-import org.jrb.docasm.web.ResponseUtils;
+import org.jrb.commons.web.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
