@@ -43,32 +43,140 @@ import org.springframework.http.ResponseEntity;
  */
 public class CrudControllerUtils<E, R extends EntityResponse<E>, L extends EntityListResponse<E>> {
 
+	/**
+	 * Callback used by {@link CrudControllerUtils} to perform the actual logic
+	 * to create an entity.
+	 * 
+	 * @author <a href="mailto:brulejr@gmail.com">Jon Brule</a>
+	 * 
+	 * @param <E>
+	 *            the type of entity affected by this callback
+	 */
 	public interface CreateEntityCallback<E> {
-		E createEntity(E submitted);
+
+		/**
+		 * Creates an entity.
+		 * 
+		 * @param entity
+		 *            the entity to be created
+		 * @return the newly-created entity
+		 */
+		E createEntity(E entity);
+
 	}
 
+	/**
+	 * Callback used by {@link CrudControllerUtils} to perform the actual logic
+	 * to delete an entity.
+	 * 
+	 * @author <a href="mailto:brulejr@gmail.com">Jon Brule</a>
+	 * 
+	 * @param <E>
+	 *            the type of entity affected by this callback
+	 */
 	public interface DeleteEntityCallback<E> {
+
+		/**
+		 * Deletes an entity.
+		 * 
+		 * @param entityId
+		 *            the identifier of the entity to be deleted
+		 */
 		void deleteEntity(Long entityId);
 	}
 
+	/**
+	 * Callback used by {@link CrudControllerUtils} to perform the actual logic
+	 * to locate an entity.
+	 * 
+	 * @author <a href="mailto:brulejr@gmail.com">Jon Brule</a>
+	 * 
+	 * @param <E>
+	 *            the type of entity affected by this callback
+	 */
 	public interface FindEntityCallback<E> {
+
+		/**
+		 * Finds an entity given its identifier.
+		 * 
+		 * @param entityId
+		 *            the entity identifier
+		 * @return to corresponding entity
+		 */
 		E findEntity(Long entityId);
+
 	}
 
+	/**
+	 * Callback used by {@link CrudControllerUtils} to perform the actual logic
+	 * to retrieve multiple entities.
+	 * 
+	 * @author <a href="mailto:brulejr@gmail.com">Jon Brule</a>
+	 * 
+	 * @param <E>
+	 *            the type of entity affected by this callback
+	 */
 	public interface RetrieveEntitiesCallback<E> {
+
+		/**
+		 * Retrieves all entities of the associated type.
+		 * 
+		 * @return to corresponding entity list
+		 */
 		List<E> retrieveEntities();
+
 	}
 
+	/**
+	 * Callback used by {@link CrudControllerUtils} to perform the actual logic
+	 * to update an entity.
+	 * 
+	 * @author <a href="mailto:brulejr@gmail.com">Jon Brule</a>
+	 * 
+	 * @param <E>
+	 *            the type of entity affected by this callback
+	 */
 	public interface UpdateEntityCallback<E> {
-		E updateEntity(Long entityId, E submitted);
+
+		/**
+		 * Updates an entity.
+		 * 
+		 * @param entityId
+		 *            the identifier of the entity to be updated
+		 * @param entity
+		 *            the updated entity
+		 * @return the newly-updated entity
+		 */
+		E updateEntity(Long entityId, E entity);
+
 	}
 
 	private final ResponseUtils responseUtils;
-	
+
 	public CrudControllerUtils(final ResponseUtils responseUtils) {
 		this.responseUtils = responseUtils;
 	}
 
+	/**
+	 * Spring MVC controller utility method that creates a domain entity. Within
+	 * a successful response, the following HATEOAS link(s) generated:
+	 * <ul>
+	 * <li>a <em>self</em> link pointing to at which this entity may be found</li>
+	 * <li>a <em>collections</em> link giving access to all entities</li>
+	 * </ul>
+	 * 
+	 * @param entity
+	 *            the entity to be created
+	 * @param entityClass
+	 *            the class of the entity to be created
+	 * @param entityResponseClass
+	 *            the class to use in generating the response
+	 * @param controllerClass
+	 *            the controller class used for generating HATEOAS links
+	 * @param callback
+	 *            a callback containing the actual logic to create the entity
+	 * @return a Spring MVC response containing the newly-created entity
+	 */
 	public ResponseEntity<R> createEntity(
 			final E entity,
 			final Class<E> entityClass,
@@ -89,10 +197,29 @@ public class CrudControllerUtils<E, R extends EntityResponse<E>, L extends Entit
 		return responseUtils.finalize(response, HttpStatus.CREATED, headers);
 	}
 
+	/**
+	 * Spring MVC controller utility method that deletes a domain entity. Within
+	 * a successful response, the following HATEOAS link(s) generated:
+	 * <ul>
+	 * <li>a <em>collections</em> link giving access to all entities</li>
+	 * </ul>
+	 * 
+	 * @param entityId
+	 *            the identifier of the domain entity to delete
+	 * @param entityClass
+	 *            the class of the entity to be deleted
+	 * @param entityResponseClass
+	 *            the class to use in generating the response
+	 * @param controllerClass
+	 *            the controller class used for generating HATEOAS links
+	 * @param callback
+	 *            a callback containing the actual logic to delete the entity
+	 * @return a Spring MVC response containing the deletion status
+	 */
 	public ResponseEntity<MessageResponse> deleteEntity(
 			final Long entityId,
 			final Class<E> entityClass,
-			final Class<R> entityResponseClass,			
+			final Class<R> entityResponseClass,
 			final Class<?> controllerClass,
 			final DeleteEntityCallback<E> callback) {
 
@@ -105,17 +232,54 @@ public class CrudControllerUtils<E, R extends EntityResponse<E>, L extends Entit
 		return responseUtils.finalize(response, HttpStatus.OK);
 	}
 
+	/**
+	 * Determines if two strings, each of may be null, are different.
+	 * 
+	 * @param a
+	 *            the first string
+	 * @param b
+	 *            the second string
+	 * @return <code>true</code> if the strings are different; otherwise,
+	 *         <code>false</code> if they are the same
+	 */
 	public <T> boolean different(final T a, final T b) {
 		return !(a == null ? b == null : a.equals(b));
 	}
 
+	/**
+	 * Calculates an entity link relation from a given class name. This relation
+	 * is built from the camel case of the plural of the class name.
+	 * 
+	 * @param classname
+	 *            the entity class name
+	 * @return the link relation
+	 */
 	protected String entityRel(final Class<?> classname) {
 		return StringUtils.uncapitalize(English.plural(classname.getSimpleName()));
 	}
 
+	/**
+	 * Spring MVC controller utility method that find a domain entity. Within a
+	 * successful response, the following HATEOAS link(s) generated:
+	 * <ul>
+	 * <li>a <em>collections</em> link giving access to all entities</li>
+	 * </ul>
+	 * 
+	 * @param entityId
+	 *            the identifier of the entity sought
+	 * @param entityClass
+	 *            the class of the entity to be found
+	 * @param entityResponseClass
+	 *            the class to use in generating the response
+	 * @param controllerClass
+	 *            the controller class used for generating HATEOAS links
+	 * @param callback
+	 *            a callback containing the actual logic to find the entity
+	 * @return a Spring MVC response containing the found entity
+	 */
 	public ResponseEntity<R> findEntity(
 			final Long entityId,
-			final Class<E> entityClass,			
+			final Class<E> entityClass,
 			final Class<R> entityResponseClass,
 			final Class<?> controllerClass,
 			final FindEntityCallback<E> callback) {
@@ -129,25 +293,61 @@ public class CrudControllerUtils<E, R extends EntityResponse<E>, L extends Entit
 		return responseUtils.finalize(response, HttpStatus.OK);
 	}
 
+	/**
+	 * Spring MVC controller utility method that retrieves entities of a
+	 * particular type.
+	 * 
+	 * @param entityListClass
+	 *            the class to use in generating the response
+	 * @param callback
+	 *            a callback containing the actual logic to retrieve the
+	 *            entities
+	 * @return a Spring MVC response containing the entity list
+	 */
 	public ResponseEntity<L> retrieveEntities(
-			final Class<L> entityListClass,
+			final Class<L> entityListResponseClass,
 			final RetrieveEntitiesCallback<E> callback) {
-		final L response = responseUtils.createResponse(entityListClass);
+		final L response = responseUtils.createResponse(entityListResponseClass);
 		final List<E> entityList = callback.retrieveEntities();
 		response.setContent(entityList);
 		return responseUtils.finalize(response, HttpStatus.OK);
 	}
 
+	/**
+	 * Spring MVC controller utility method that updates a existing domain
+	 * entity. Within a successful response, the following HATEOAS link(s)
+	 * generated:
+	 * <ul>
+	 * <li>a <em>self</em> link pointing to at which this entity may be found</li>
+	 * <li>a <em>collections</em> link giving access to all entities</li>
+	 * </ul>
+	 * 
+	 * @param entityId
+	 *            the identifier of the entity to be updated
+	 * @param entity
+	 *            the updated entity data
+	 * @param entity
+	 *            the entity to be updated
+	 * @param entityClass
+	 *            the class of the entity to be updated
+	 * @param entityResponseClass
+	 *            the class to use in generating the response
+	 * @param controllerClass
+	 *            the controller class used for generating HATEOAS links
+	 * @param callback
+	 *            a callback containing the actual logic to update the entity
+	 * @return a Spring MVC response containing the updated entity
+	 */
 	public ResponseEntity<R> updateEntity(
 			final Long entityId,
-			final E submitted,
+			final E entity,
 			final Class<E> entityClass,
 			final Class<R> entityResponseClass,
 			final Class<?> controllerClass,
 			final UpdateEntityCallback<E> callback) {
 
 		final R response = responseUtils.createResponse(entityResponseClass);
-		final E updatedEntity = callback.updateEntity(entityId, submitted);
+		final E updatedEntity = callback.updateEntity(entityId, entity);
 		response.setEntity(updatedEntity);
 
 		response.add(linkTo(controllerClass).slash(updatedEntity).withSelfRel());
