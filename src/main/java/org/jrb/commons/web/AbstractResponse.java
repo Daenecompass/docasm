@@ -37,7 +37,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * 
  * @author <a href="mailto:brulejr@gmail.com">Jon Brule</a>
  */
-public abstract class AbstractResponse extends ResourceSupport {
+public abstract class AbstractResponse extends ResourceSupport implements Response {
 
 	public final static String HEADER_ELAPSED_TIME = "x-elapsed-time";
 	public final static String HEADER_PRODUCT = "x-product";
@@ -48,59 +48,72 @@ public abstract class AbstractResponse extends ResourceSupport {
 	@JsonIgnore
 	private final Map<String, Object> headers = new HashMap<>();
 
+	@Override
 	public void addHeader(final String key, final Object value) {
 		headers.put(key, value);
 	}
 
+	@Override
 	public <T> T getHeader(final String key, final Class<T> headerClass) {
 		return headerClass.cast(headers.get(key));
 	}
 
+	@Override
 	public Map<String, Object> getHeaders() {
 		return headers;
 	}
 
+	@Override
 	@JsonIgnore
 	public Long getElapsedTime() {
 		return getHeader(HEADER_ELAPSED_TIME, Long.class);
 	}
 
+	@Override
 	@JsonIgnore
 	public String getProduct() {
 		return getHeader(HEADER_PRODUCT, String.class);
 	}
 
+	@Override
 	@JsonIgnore
 	public Date getStartTime() {
 		return getHeader(HEADER_START_TIME, Date.class);
 	}
 
+	@Override
 	@JsonIgnore
 	public HttpStatus getStatus() {
 		return getHeader(HEADER_STATUS, HttpStatus.class);
 	}
 
+	@Override
 	@JsonIgnore
 	public String getVersion() {
 		return getHeader(HEADER_VERSION, String.class);
 	}
 
+	@Override
 	public void setElapsedTime(final Long elapsedTime) {
 		headers.put(HEADER_ELAPSED_TIME, elapsedTime);
 	}
 
+	@Override
 	public void setProduct(final String product) {
 		headers.put(HEADER_PRODUCT, product);
 	}
 
+	@Override
 	public void setStartTime(final Date startTime) {
 		headers.put(HEADER_START_TIME, startTime);
 	}
 
+	@Override
 	public void setStatus(final HttpStatus status) {
 		headers.put(HEADER_STATUS, status);
 	}
 
+	@Override
 	public void setVersion(final String version) {
 		headers.put(HEADER_VERSION, version);
 	}

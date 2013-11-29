@@ -24,14 +24,29 @@ package org.jrb.docasm.web.controller;
 
 import java.util.List;
 
-import org.jrb.commons.web.controller.AbstractCrudController;
+import javax.annotation.PostConstruct;
+
+import org.jrb.commons.web.MessageResponse;
+import org.jrb.commons.web.ResponseUtils;
+import org.jrb.commons.web.controller.CrudControllerUtils;
+import org.jrb.commons.web.controller.CrudControllerUtils.CreateEntityCallback;
+import org.jrb.commons.web.controller.CrudControllerUtils.DeleteEntityCallback;
+import org.jrb.commons.web.controller.CrudControllerUtils.FindEntityCallback;
+import org.jrb.commons.web.controller.CrudControllerUtils.RetrieveEntitiesCallback;
+import org.jrb.commons.web.controller.CrudControllerUtils.UpdateEntityCallback;
 import org.jrb.docasm.domain.Document;
 import org.jrb.docasm.service.document.DocumentService;
+import org.jrb.docasm.service.document.DocumentServiceException;
+import org.jrb.docasm.service.document.UnknownDocumentException;
 import org.jrb.docasm.web.response.DocumentListResponse;
 import org.jrb.docasm.web.response.DocumentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Provides handling for the application root URI.
@@ -40,60 +55,114 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/api/document")
-public class DocumentController extends AbstractCrudController<Document> {
+public class DocumentController {
 
 	@Autowired
 	private DocumentService documentService;
 
-	@Override
-	protected Class<Document> entityClass() {
-		return Document.class;
+	@Autowired
+	private ResponseUtils responseUtils;
+
+	private CrudControllerUtils<Document, DocumentResponse, DocumentListResponse> controllerUtils;
+
+	@PostConstruct
+	public void init() {
+		this.controllerUtils =
+				new CrudControllerUtils<Document, DocumentResponse, DocumentListResponse>(responseUtils);
 	}
 
-	@Override
-	protected Class<DocumentResponse> entityResponseClass() {
-		return DocumentResponse.class;
+	@RequestMapping(method = RequestMethod.POST)
+	public ResponseEntity<DocumentResponse> createDocument(@RequestBody final Document document)
+			throws DocumentServiceException {
+
+		return controllerUtils.createEntity(
+				document,
+				Document.class,
+				DocumentResponse.class,
+				getClass(),
+				new CreateEntityCallback<Document>() {
+					@Override
+					public Document createEntity(Document submitted) {
+						return documentService.createDocument(submitted);
+					}
+				});
 	}
 
-	@Override
-	protected Class<DocumentListResponse> entityListResponseClass() {
-		return DocumentListResponse.class;
+	@RequestMapping(value = "{documentId}", method = RequestMethod.DELETE)
+	public ResponseEntity<MessageResponse> deleteDocument(@PathVariable final Long documentId)
+			throws DocumentServiceException {
+
+		return controllerUtils.deleteEntity(
+				documentId,
+				Document.class,
+				DocumentResponse.class,
+				DocumentController.class,
+				new DeleteEntityCallback<Document>() {
+					@Override
+					public void deleteEntity(Long entityId) {
+						documentService.deleteDocument(documentId);
+					}
+				});
 	}
 
-	@Override
-	protected Document createEntityCallback(Document submitted) {
-		return documentService.createDocument(submitted);
+	@RequestMapping(value = "{documentId}", method = RequestMethod.GET)
+	public ResponseEntity<DocumentResponse> findEntity(@PathVariable final Long documentId)
+			throws UnknownDocumentException, DocumentServiceException {
+
+		return controllerUtils.findEntity(
+				documentId,
+				Document.class,
+				DocumentResponse.class,
+				DocumentController.class,
+				new FindEntityCallback<Document>() {
+					@Override
+					public Document findEntity(Long entityId) {
+						return documentService.findDocument(documentId);
+					}
+				});
 	}
 
-	@Override
-	protected void deleteEntityCallback(Long documentId) {
-		documentService.deleteDocument(documentId);
+	@RequestMapping(method = RequestMethod.GET)
+	public ResponseEntity<DocumentListResponse> retrieveDocuments() throws DocumentServiceException {
+
+		return controllerUtils.retrieveEntities(
+				DocumentListResponse.class,
+				new RetrieveEntitiesCallback<Document>() {
+					@Override
+					public List<Document> retrieveEntities() {
+						return documentService.retrieveDocuments(null);
+					}
+				});
+
 	}
 
-	@Override
-	protected Document findEntityCallback(Long documentId) {
-		return documentService.findDocument(documentId);
-	}
-
-	@Override
-	protected List<Document> retrieveEntitiesCallback() {
-		return documentService.retrieveDocuments(null);
-	}
-
-	@Override
-	protected Document updateEntityCallback(Long documentId, Document submitted) {
-		final Document existing = documentService.findDocument(documentId);
-		final Document.Builder builder = new Document.Builder().from(existing);
-		if (different(submitted.getName(), existing.getName())) {
-			builder.setName(submitted.getName());
-		}
-		if (different(submitted.getTemplateUri(), existing.getTemplateUri())) {
-			builder.setTemplateUri(submitted.getTemplateUri());
-		}
-		if (different(submitted.getDescription(), existing.getDescription())) {
-			builder.setDescription(submitted.getDescription());
-		}
-		return documentService.updateDocument(builder.build());		
+	@RequestMapping(value = "{documentId}", method = RequestMethod.PATCH)
+	public ResponseEntity<DocumentResponse> updateDocument(
+			@PathVariable final Long documentId,
+			@RequestBody final Document document) throws DocumentServiceException {
+		return controllerUtils.updateEntity(
+				documentId,
+				document,
+				Document.class,
+				DocumentResponse.class,
+				DocumentController.class,
+				new UpdateEntityCallback<Document>() {
+					@Override
+					public Document updateEntity(Long entityId, Document submitted) {
+						final Document existing = documentService.findDocument(documentId);
+						final Document.Builder builder = new Document.Builder().from(existing);
+						if (controllerUtils.different(submitted.getName(), existing.getName())) {
+							builder.setName(submitted.getName());
+						}
+						if (controllerUtils.different(submitted.getTemplateUri(), existing.getTemplateUri())) {
+							builder.setTemplateUri(submitted.getTemplateUri());
+						}
+						if (controllerUtils.different(submitted.getDescription(), existing.getDescription())) {
+							builder.setDescription(submitted.getDescription());
+						}
+						return documentService.updateDocument(builder.build());
+					}
+				});
 	}
 
 }

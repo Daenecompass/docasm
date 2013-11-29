@@ -45,7 +45,11 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  * @author <a href="mailto:brulejr@gmail.com">Jon Brule</a>
  */
 @Configuration
-@ComponentScan({ "org.jrb.docasm.domain", "org.jrb.docasm.repository", "org.jrb.docasm.service.*", "org.jrb.docasm.web.*" })
+@ComponentScan({
+		"org.jrb.docasm.domain",
+		"org.jrb.docasm.repository",
+		"org.jrb.docasm.service",
+		"org.jrb.docasm.web" })
 @PropertySource({ "classpath:config/docasm.properties", "classpath:config/${app.env:LOCAL}/docasm.properties", })
 public class ApplicationConfig {
 

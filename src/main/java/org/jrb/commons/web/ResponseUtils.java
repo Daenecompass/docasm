@@ -50,9 +50,9 @@ public class ResponseUtils {
 	@Resource
 	private String version;
 
-	public <T extends AbstractResponse> T createResponse(Class<T> responseClass) {
+	public <R extends Response> R createResponse(Class<R> responseClass) {
 		try {
-			final T response = responseClass.newInstance();
+			final R response = responseClass.newInstance();
 			response.setProduct(product);
 			response.setVersion(version);
 			response.setStartTime(new Date());
@@ -65,26 +65,24 @@ public class ResponseUtils {
 	public ResponseEntity<MessageResponse> createMessageResponse(final String message) {
 		final MessageResponse response = createResponse(MessageResponse.class);
 		response.setMessage(message);
-		response.setStatus(HttpStatus.OK);
-		return finalize(response);
+		return finalize(response, HttpStatus.OK);
 	}
 
 	public ResponseEntity<MessageResponse> createMessageResponse(final String message, final HttpStatus status) {
 		final MessageResponse response = createResponse(MessageResponse.class);
 		response.setMessage(message);
-		response.setStatus(status);
-		return finalize(response);
+		return finalize(response, status);
 	}
 
-	public <T extends AbstractResponse> ResponseEntity<T> finalize(final T response) {
+	public <R extends Response> ResponseEntity<R> finalize(final R response) {
 		return finalize(response, HttpStatus.OK, new HttpHeaders());
 	}
 
-	public <T extends AbstractResponse> ResponseEntity<T> finalize(final T response, final HttpStatus status) {
+	public <R extends Response> ResponseEntity<R> finalize(final R response, final HttpStatus status) {
 		return finalize(response, status, new HttpHeaders());
 	}
 
-	public <T extends AbstractResponse> ResponseEntity<T> finalize(final T response, final HttpStatus status, final HttpHeaders headers) {
+	public <R extends Response> ResponseEntity<R> finalize(final R response, final HttpStatus status, final HttpHeaders headers) {
 		final long startTime = response.getStartTime().getTime();
 		response.setElapsedTime(new Date().getTime() - startTime);
 		for (final Map.Entry<String, ?> header : response.getHeaders().entrySet()) {
@@ -92,7 +90,7 @@ public class ResponseUtils {
 			headers.put(header.getKey(), Collections.singletonList(value));
 		}
 		response.setStatus(status);
-		return new ResponseEntity<T>(response, headers, response.getStatus());
+		return new ResponseEntity<R>(response, headers, response.getStatus());
 	}
 
 }

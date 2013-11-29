@@ -22,34 +22,27 @@
  */
 package org.jrb.commons.web;
 
-import java.util.List;
-
-import org.springframework.data.domain.Page;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
- * Standard RESTFUL entity list resource.
+ * Standard RESTFUL entity response.
  * 
  * @author <a href="mailto:brulejr@gmail.com">Jon Brule</a>
- * 
- * @param <E>
- *            The wrapped entity
  */
-public interface EntityListResponse<E> extends Response {
+@JsonInclude(Include.NON_EMPTY)
+public abstract class AbstractEntityResponse<E> extends AbstractResponse implements EntityResponse<E> {
 
-	List<E> getContent();
+	private E entity;
 
-	Integer getNumber();
+	@Override
+	public E getEntity() {
+		return entity;
+	}
 
-	Integer getNumberOfElements();
-
-	Integer getSize();
-
-	Long getTotalElements();
-
-	Integer getTotalPages();
-
-	void setContent(List<E> content);
-
-	void setPage(Page<E> page);
+	@Override
+	public void setEntity(final E entity) {
+		this.entity = entity;
+	}
 
 }

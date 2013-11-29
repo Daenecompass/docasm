@@ -22,25 +22,17 @@
  */
 package org.jrb.commons.web;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 /**
- * Standard RESTFUL entity resource.
- * 
+ * Standard RESTFUL entity response.
+ *
  * @author <a href="mailto:brulejr@gmail.com">Jon Brule</a>
+ *
+ * @param <E> the wrapped entity
  */
-@JsonInclude(Include.NON_EMPTY)
-public abstract class EntityResponse<E> extends AbstractResponse {
+public interface EntityResponse<E> extends Response {
 
-	private E entity;
+	E getEntity();
 
-	public E getEntity() {
-		return entity;
-	}
-
-	public void setEntity(final E entity) {
-		this.entity = entity;
-	}
+	void setEntity(E entity);
 
 }

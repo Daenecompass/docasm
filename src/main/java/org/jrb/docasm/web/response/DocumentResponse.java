@@ -22,7 +22,7 @@
  */
 package org.jrb.docasm.web.response;
 
-import org.jrb.commons.web.EntityResponse;
+import org.jrb.commons.web.AbstractEntityResponse;
 import org.jrb.docasm.domain.Document;
 
 /**
@@ -30,6 +30,6 @@ import org.jrb.docasm.domain.Document;
  *
  * @author <a href="mailto:brulejr@gmail.com">Jon Brule</a>
  */
-public class DocumentResponse extends EntityResponse<Document> {
+public class DocumentResponse extends AbstractEntityResponse<Document> {
 
 }
