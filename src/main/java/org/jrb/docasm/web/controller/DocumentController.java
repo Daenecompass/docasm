@@ -37,6 +37,8 @@ import org.jrb.commons.web.controller.CrudControllerUtils.UpdateEntityCallback;
 import org.jrb.docasm.domain.Document;
 import org.jrb.docasm.service.document.DocumentService;
 import org.jrb.docasm.service.document.DocumentServiceException;
+import org.jrb.docasm.service.document.DuplicateDocumentException;
+import org.jrb.docasm.service.document.InvalidDocumentException;
 import org.jrb.docasm.service.document.UnknownDocumentException;
 import org.jrb.docasm.web.response.DocumentListResponse;
 import org.jrb.docasm.web.response.DocumentResponse;
@@ -49,7 +51,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Provides handling for the application root URI.
+ * RESTful API for managing {@link Document} entities and their actions.
  * 
  * @author <a href="mailto:brulejr@gmail.com">Jon Brule</a>
  */
@@ -71,9 +73,23 @@ public class DocumentController {
 				new CrudControllerUtils<Document, DocumentResponse, DocumentListResponse>(responseUtils);
 	}
 
+	/**
+	 * RESTful CRUD endpoint to create a document.
+	 * 
+	 * @param document
+	 *            the document to be created.
+	 * @return a Spring MVC response containing the newly-created document
+	 * @throws DuplicateDocumentException
+	 *             if attempt made to create a document that already exists
+	 * @throws InvalidDocumentException
+	 *             if the document to be created does not pass the established
+	 *             validation rules
+	 * @throws DocumentServiceException
+	 *             if an unexpected error occurred while creating a document
+	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<DocumentResponse> createDocument(@RequestBody final Document document)
-			throws DocumentServiceException {
+			throws DuplicateDocumentException, InvalidDocumentException, DocumentServiceException {
 
 		return controllerUtils.createEntity(
 				document,
@@ -88,9 +104,20 @@ public class DocumentController {
 				});
 	}
 
+	/**
+	 * RESTful CRUD endpoint to create a document.
+	 * 
+	 * @param documentId
+	 *            the identifier of the document to be deleted
+	 * @return a Spring MVC response containing the deletion status
+	 * @throws UnknownDocumentException
+	 *             if attempt made to delete an unregistered document
+	 * @throws DocumentServiceException
+	 *             if an unexpected error occurred while deleting a document
+	 */
 	@RequestMapping(value = "{documentId}", method = RequestMethod.DELETE)
 	public ResponseEntity<MessageResponse> deleteDocument(@PathVariable final Long documentId)
-			throws DocumentServiceException {
+			throws UnknownDocumentException, DocumentServiceException {
 
 		return controllerUtils.deleteEntity(
 				documentId,
@@ -105,6 +132,17 @@ public class DocumentController {
 				});
 	}
 
+	/**
+	 * RESTful CRUD endpoint to find an existing document.
+	 * 
+	 * @param documentId
+	 *            the identifier of the desired document
+	 * @return a Spring MVC response containing the found entity
+	 * @throws UnknownDocumentException
+	 *             if attempt made to locate an unregistered document
+	 * @throws DocumentServiceException
+	 *             if an unexpected error occurred while finding a document
+	 */
 	@RequestMapping(value = "{documentId}", method = RequestMethod.GET)
 	public ResponseEntity<DocumentResponse> findEntity(@PathVariable final Long documentId)
 			throws UnknownDocumentException, DocumentServiceException {
@@ -122,6 +160,14 @@ public class DocumentController {
 				});
 	}
 
+	/**
+	 * RESTful CRUD endpoint to retrieve existing documents.
+	 * 
+	 * @return a Spring MVC response containing the entity list
+	 * @throws DocumentServiceException
+	 *             if an unexpected error occurred while retrieving the
+	 *             documents
+	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<DocumentListResponse> retrieveDocuments() throws DocumentServiceException {
 
@@ -136,10 +182,27 @@ public class DocumentController {
 
 	}
 
+	/**
+	 * RESTful CRUD endpoint to update an existing document.
+	 * 
+	 * @param documentId
+	 *            the identifier of the document to be updated
+	 * @param document
+	 *            the document updates
+	 * @return a Spring MVC response containing the updated document
+	 * @throws InvalidDocumentException
+	 *             if the document updates do not pass the established
+	 *             validation rules
+	 * @throws UnknownDocumentException
+	 *             if attempt made to updated an unregistered document
+	 * @throws DocumentServiceException
+	 *             if an unexpected error occurred while updating a document
+	 */
 	@RequestMapping(value = "{documentId}", method = RequestMethod.PATCH)
 	public ResponseEntity<DocumentResponse> updateDocument(
 			@PathVariable final Long documentId,
-			@RequestBody final Document document) throws DocumentServiceException {
+			@RequestBody final Document document)
+			throws InvalidDocumentException, UnknownDocumentException, DocumentServiceException {
 		return controllerUtils.updateEntity(
 				documentId,
 				document,
